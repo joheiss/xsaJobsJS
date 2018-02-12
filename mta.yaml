@@ -1,0 +1,45 @@
+ID: xsaJobsJS
+_schema-version: '2.0'
+version: 0.0.1
+resources:
+  - name: jobScheduler
+    type: com.sap.xs.job-scheduler
+  - name: xsaJobsJSuaa
+    type: com.sap.xs.uaa-space
+    parameters:
+      path: ./xs-security.json
+  - name: hdi_db
+    properties:
+      hdi-container-name: '${service-name}'
+    type: com.sap.xs.hdi-container
+modules:
+  - name: db
+    type: hdb
+    path: db
+    requires:
+      - name: hdi_db
+  - name: js
+    type: nodejs
+    path: js
+    provides:
+      - name: js_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: hdi_db
+      - name: jobScheduler
+      - name: xsaJobsJSuaa
+    properties:
+      SAP_JWT_TRUST_ACL: '[{"clientid":"*","identityzone":"*"}]'
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+  - name: ui
+    type: html5
+    path: ui
+    requires:
+      - name: xsaJobsJSuaa
+      - name: js_api
+        group: destinations
+        properties:
+          forwardAuthToken: true
+          name: js_backend
+          url: '~{url}'

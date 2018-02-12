@@ -1,0 +1,10 @@
+namespace xsaJobsJS.db;
+
+context tables {
+
+    /*@@layout{"layoutInfo":{"x":183,"y":74.5}}*/
+    entity MyTable {
+        key id      : Integer generated always as identity(start with 1);
+            created : UTCTimestamp;
+    };
+};

@@ -1,0 +1,10 @@
+{
+	"welcomeFile": "index.html",
+	"authenticationMethod": "route",
+	"routes": [{
+		"source": "^/js/(.*)$",
+		"destination": "js_backend",
+		"authenticationType": "xsuaa",
+		"scope": "$XSAPPNAME.VIEW"
+	}]
+}

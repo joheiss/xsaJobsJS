@@ -1,0 +1,27 @@
+{
+	"xsappname": "xsaJobsJS",
+	"scopes": [{
+		"name": "$XSAPPNAME.Viewer",
+		"description": "Scope for Viewer"
+	}, {
+		"name": "$XSAPPNAME.JobScheduler",
+		"description": "Scope for Job Scheduler",
+		"grant-as-authority-to-apps": ["jobscheduler"]
+	}, {
+		"name": "$XSAPPNAME.Admin",
+		"description": "Scope for Admin"
+	}],
+	"role-templates": [{
+		"name": "xsaJobsJSViewer",
+		"description": "Role Template for Viewer",
+		"scope-references": ["$XSAPPNAME.Viewer"]
+	}, {
+		"name": "xsaJobsJSJobScheduler",
+		"description": "Role Template for Job Scheduler",
+		"scope-references": ["$XSAPPNAME.JobScheduler"]
+	}, {
+		"name": "xsaJobsJSAdmin",
+		"description": "Role Template for Admin",
+		"scope-references": ["$XSAPPNAME.Admin","$XSAPPNAME.Viewer"]
+	}]
+}
