@@ -5,6 +5,6 @@
 		"source": "^/js/(.*)$",
 		"destination": "js_backend",
 		"authenticationType": "xsuaa",
-		"scope": "$XSAPPNAME.VIEW"
+		"scope": "$XSAPPNAME.Viewer"
 	}]
 }
