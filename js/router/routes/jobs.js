@@ -1,52 +1,50 @@
 /*eslint no-console: 0, no-shadow: 0, new-cap: 0*/
 "use strict";
 
-var xsenv = require("@sap/xsenv");
 var express = require("express");
-var request = require("request");
+var xsenv = require("@sap/xsenv");
+var jobsc = require("@sap/jobs-client");
 
 module.exports = function() {
 	var app = express.Router();
-	
-	// get the full URI of this app
-	var app2 = JSON.parse(process.env.VCAP_APPLICATION);
-	var appURI = app2.full_application_uris[0];
-	
-	// get credentials for job scheduler REST API
+
+	// setup connection to job scheduler REST API
 	var jobOptions = xsenv.getServices({
 		jobs: {
 			tag: "jobscheduler"
 		}
 	});
-	var jobsURL = jobOptions.jobs.url;
-	var jobsAuth = "Basic " + new Buffer(jobOptions.jobs.user + ":" + jobOptions.jobs.password).toString("base64");
+	var schedulerOptions = {
+		baseURL: jobOptions.jobs.url,
+		user: jobOptions.jobs.user,
+		password: jobOptions.jobs.password,
+		timeout: 15000
+	};
+	var scheduler = new jobsc.Scheduler(schedulerOptions);
 
 	app.get("/create", function(req, res) {
 		if (req.authInfo.checkScope("$XSAPPNAME.Admin")) {
-			var bodyJSON = {
-				"name": "myTask",
-				"description": "Perform my task",
-				"action": appURI + "/js/hana/insert",
-				"active": true,
-				"httpMethod": "GET",
-				"schedules": [{
-					"description": "Perform my task every 15 seconds",
-					"cron": "* * * * * * */15",
-					"data": {},
-					"active": true
-				}]
+			// get the full URI of this app
+			var thisApp = JSON.parse(process.env.VCAP_APPLICATION);
+			var thisAppURI = thisApp.full_application_uris[0];
+			var myJob = {
+				job: {
+					"name": "myJob",
+					"description": "Perform my action",
+					"action": thisAppURI + "/js/hana/insert",
+					"active": true,
+					"httpMethod": "POST",
+					"schedules": [{
+						"description": "Perform my action every 15 seconds",
+						"repeatInterval": "15 seconds",
+						"data": {},
+						"active": true
+					}]
+				}
 			};
-			request({
-				url: jobsURL + "/scheduler/jobs",
-				method: "POST",
-				headers: {
-					"Authorization": jobsAuth
-				},
-				json: true,
-				body: bodyJSON
-			}, function(err, response, body) {
+			scheduler.createJob(myJob, function(err, body) {
 				if (err) {
-					res.status(500).json(body);
+					res.status(500).json(err);
 				} else {
 					res.status(200).json(body);
 				}
@@ -58,25 +56,20 @@ module.exports = function() {
 
 	app.get("/delete", function(req, res) {
 		if (req.authInfo.checkScope("$XSAPPNAME.Admin")) {
-			var jobId = req.query.id;
+			var jobId = req.query.jobId;
 			if (jobId !== undefined) {
-				// need to validate thet jobId contains a valid Job Id !!!
-				request({
-					url: jobsURL + "/scheduler/jobs/" + jobId,
-					method: "DELETE",
-					headers: {
-						"Authorization": jobsAuth
-					},
-					json: true
-				}, function(err, response, body) {
+				var myJob = {
+					"jobId": jobId
+				};
+				scheduler.deleteJob(myJob, function(err, body) {
 					if (err) {
-						res.status(500).json(body);
+						res.status(500).json(err);
 					} else {
 						res.status(200).json(body);
 					}
 				});
 			} else {
-				res.type("text/html").status(200).send("Missing JobId!");
+				res.type("text/html").status(200).send("Missing Job Id");
 			}
 		} else {
 			res.type("text/plain").status(403).send("Forbidden");

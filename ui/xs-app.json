@@ -6,5 +6,10 @@
 		"destination": "js_backend",
 		"authenticationType": "xsuaa",
 		"scope": "$XSAPPNAME.Viewer"
+	}, {
+		"source": "^/(.*)$",
+		"localDir": "resources",
+		"authenticationType": "xsuaa",
+		"scope": "$XSAPPNAME.Viewer"
 	}]
 }

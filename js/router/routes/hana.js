@@ -27,7 +27,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/insert", function(req, res) {
+	app.post("/insert", function(req, res) {
 		if (req.authInfo.checkScope("$XSAPPNAME.Admin") || req.authInfo.checkScope("$XSAPPNAME.JobScheduler")) {
 			var sql = 'INSERT INTO "xsaJobsJS.db::tables.MyTable" ("created") VALUES(?)';
 			var ts = new Date().toISOString();

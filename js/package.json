@@ -6,7 +6,7 @@
 		"@sap/xssec": "latest",
 		"@sap/hdbext": "latest",
 		"@sap/logging": "latest",
-		"request": "latest"
+		"@sap/jobs-client": "latest"
 	},
 	"devDependencies": {
 		"gulp": "3.9.1",
