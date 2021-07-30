@@ -1,3 +1,4 @@
+/*eslint-env node, es6*/
 /**
  * This is the gulp script to run jasmine tests with coverage analysis using istanbul.
  * For more information, please see also:
@@ -10,15 +11,15 @@
  * @see {@link https://www.npmjs.com/package/glob}
  **/
 
-var path = require("path");
+const path = require("path");
 
-var gulp = require("gulp");
-var jasmine = require("gulp-jasmine");
-var istanbul = require("gulp-istanbul");
-var reporters = require("jasmine-reporters");
+const gulp = require("gulp");
+const jasmine = require("gulp-jasmine");
+const istanbul = require("gulp-istanbul");
+const reporters = require("jasmine-reporters");
 
 // required to replace absolute paths in results with relative ones
-var replace = require("gulp-replace");
+const replace = require("gulp-replace");
 
 // configuration of the test coverage, uses glob syntax
 // @see {@link https://www.npmjs.com/package/glob}
@@ -26,10 +27,10 @@ var replace = require("gulp-replace");
 // the following files are included in the coverage analysis
 // include all javascript files and exclude myExclude.js
 // replace or remove files depending on what is to be excluded or included in addition
-var includedScripts = ["**/*.js", "!myExclude.js"];
+const includedScripts = ["**/*.js", "!myExclude.js"];
 
 // the following files are part of the framework and are to be excluded from the test coverage
-var defaultExclusion = ["!**/*spec.js", "!rungulp.js", "!gulpfile.js", "!**/node_modules/**", "!appcontroller.*/**", "!vendor/**"];
+const defaultExclusion = ["!**/*spec.js", "!rungulp.js", "!gulpfile.js", "!**/node_modules/**", "!appcontroller.*/**", "!vendor/**"];
 
 // test results folder for test view history
 // assign each test run a unique timestamp, coverage and test results
@@ -40,11 +41,11 @@ var defaultExclusion = ["!**/*spec.js", "!rungulp.js", "!gulpfile.js", "!**/node
 // 456789_report.xml
 // 456789_coverage.json
 // ...
-var testResultsDir = path.join(__dirname, ".testresults");
+const testResultsDir = path.join(__dirname, ".testresults");
 
-var timestamp = Date.now();
-var testResultFile = timestamp + "_report.xml";
-var coverageResultFile = timestamp + "_coverage.json";
+const timestamp = Date.now();
+const testResultFile = timestamp + "_report.xml";
+const coverageResultFile = timestamp + "_coverage.json";
 
 /**
  * Instrument the test/productive code

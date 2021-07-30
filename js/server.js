@@ -1,16 +1,17 @@
 /*eslint no-console: 0, no-unused-vars: 0*/
+/*eslint-env node, es6*/
 "use strict";
 
-var xsenv = require("@sap/xsenv");
-var xssec = require("@sap/xssec");
-var hdbext = require("@sap/hdbext");
-var logging = require("@sap/logging");
-var express = require("express");
-var passport = require("passport");
+const xsenv = require("@sap/xsenv");
+const xssec = require("@sap/xssec");
+const hdbext = require("@sap/hdbext");
+const logging = require("@sap/logging");
+const express = require("express");
+const passport = require("passport");
 
-var appContext = logging.createAppContext();
+const appContext = logging.createAppContext();
 
-var app = express();
+const app = express();
 
 passport.use("JWT", new xssec.JWTStrategy(xsenv.getServices({
 	uaa: {
@@ -20,7 +21,7 @@ passport.use("JWT", new xssec.JWTStrategy(xsenv.getServices({
 app.use(logging.expressMiddleware(appContext));
 app.use(passport.initialize());
 
-var hanaOptions = xsenv.getServices({
+const hanaOptions = xsenv.getServices({
 	hana: {
 		tag: "hana"
 	}
@@ -32,9 +33,9 @@ app.use(
 	hdbext.middleware(hanaOptions.hana)
 );
 
-var server = require("http").createServer();
-var port = process.env.PORT || 3000;
-var router = require("./router")(app, server);
+const server = require("http").createServer();
+const port = process.env.PORT || 3000;
+const router = require("./router")(app, server);
 
 server.on("request", app);
 
